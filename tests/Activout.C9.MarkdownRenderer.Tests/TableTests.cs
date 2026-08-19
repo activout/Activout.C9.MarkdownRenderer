@@ -59,6 +59,26 @@ public class TableTests
             result);
     }
 
+    [Theory]
+    [InlineData(null)]
+    [InlineData(0)]
+    [InlineData(1)]
+    public async Task TableCellSpanOfOneOrZeroOrNull_StaysSimpleGfmTable(int? span)
+    {
+        var renderer = new MarkdownRenderer();
+        var doc = Doc(Table(
+            Row(Header("A"), Header("B")),
+            Row(Cell("x", rowspan: span, colspan: span), Cell("y", rowspan: span, colspan: span))));
+
+        var result = await renderer.ToMarkdown(doc);
+
+        Assert.Equal(
+            "| A | B |\n" +
+            "| --- | --- |\n" +
+            "| x | y |\n",
+            result);
+    }
+
     [Fact]
     public async Task TableWithRowspan_FallsBackToHtml()
     {

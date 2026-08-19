@@ -94,6 +94,17 @@ public class MarksTests
     }
 
     [Fact]
+    public async Task SpecialCharactersInsideBoldText_AreEscaped()
+    {
+        var renderer = new MarkdownRenderer();
+        var doc = Doc(Paragraph(Text("Use [b] carefully", "bold")));
+
+        var result = await renderer.ToMarkdown(doc);
+
+        Assert.Equal("**Use \\[b\\] carefully**\n", result);
+    }
+
+    [Fact]
     public async Task UnknownMark_RendersPlainTextAndReportsIssue()
     {
         MarkdownRenderingIssue? issue = null;

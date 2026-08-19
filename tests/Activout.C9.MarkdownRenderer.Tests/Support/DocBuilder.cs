@@ -99,6 +99,15 @@ internal static class DocBuilder
             }
         };
 
+    public static AssetStructure AssetWithoutFile(string? title = null, string? description = null) => new()
+    {
+        NodeType = "embedded-asset-block",
+        Data = new AssetStructureData
+        {
+            Target = new Asset { Title = title!, Description = description! }
+        }
+    };
+
     public static AssetHyperlink AssetLink(string? url, string? title, params IContent[] content) => new()
     {
         NodeType = "asset-hyperlink",

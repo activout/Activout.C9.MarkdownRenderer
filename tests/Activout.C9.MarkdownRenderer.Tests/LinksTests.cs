@@ -40,6 +40,7 @@ public class LinksTests
 
     [Theory]
     [InlineData("javascript:alert(1)")]
+    [InlineData("JAVASCRIPT:alert(1)")]
     [InlineData("data:text/html,<script>alert(1)</script>")]
     [InlineData("vbscript:msgbox(1)")]
     public async Task UnsafeHyperlinkScheme_IsNeutralized(string unsafeUrl)
@@ -72,6 +73,17 @@ public class LinksTests
         var result = await renderer.ToMarkdown(doc);
 
         Assert.Equal("[about](//example.com/about)\n", result);
+    }
+
+    [Fact]
+    public async Task HyperlinkTitleContainingQuote_IsEscaped()
+    {
+        var renderer = new MarkdownRenderer();
+        var doc = Doc(Paragraph(LinkWithTitle("https://example.com", "Click \"here\"", Text("example"))));
+
+        var result = await renderer.ToMarkdown(doc);
+
+        Assert.Equal("[example](https://example.com \"Click \\\"here\\\"\")\n", result);
     }
 
     [Fact]
