@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Activout.C9.MarkdownRenderer/Activout.C9.MarkdownRenderer.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Activout.C9.MarkdownRenderer.Tests/Activout.C9.MarkdownRenderer.Tests.csproj" />
+  </Folder>
+</Solution>
