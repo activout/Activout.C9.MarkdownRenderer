@@ -103,6 +103,61 @@ public class BasicRenderingTests
     }
 
     [Fact]
+    public async Task TextStartingWithDash_IsEscaped()
+    {
+        var renderer = new MarkdownRenderer();
+        var doc = Doc(Paragraph(Text("- Not a list")));
+
+        var result = await renderer.ToMarkdown(doc);
+
+        Assert.Equal("\\- Not a list\n", result);
+    }
+
+    [Fact]
+    public async Task TextStartingWithPlus_IsEscaped()
+    {
+        var renderer = new MarkdownRenderer();
+        var doc = Doc(Paragraph(Text("+ Not a list")));
+
+        var result = await renderer.ToMarkdown(doc);
+
+        Assert.Equal("\\+ Not a list\n", result);
+    }
+
+    [Fact]
+    public async Task TextStartingWithAsteriskBullet_IsEscaped()
+    {
+        var renderer = new MarkdownRenderer();
+        var doc = Doc(Paragraph(Text("* Not a list")));
+
+        var result = await renderer.ToMarkdown(doc);
+
+        Assert.Equal("\\* Not a list\n", result);
+    }
+
+    [Fact]
+    public async Task TextStartingWithOrderedMarker_IsEscaped()
+    {
+        var renderer = new MarkdownRenderer();
+        var doc = Doc(Paragraph(Text("1. Not a list")));
+
+        var result = await renderer.ToMarkdown(doc);
+
+        Assert.Equal("1\\. Not a list\n", result);
+    }
+
+    [Fact]
+    public async Task BulletLikeCharactersMidSentence_AreNotEscaped()
+    {
+        var renderer = new MarkdownRenderer();
+        var doc = Doc(Paragraph(Text("a - b + c * d")));
+
+        var result = await renderer.ToMarkdown(doc);
+
+        Assert.Equal("a - b + c * d\n", result);
+    }
+
+    [Fact]
     public async Task UnsupportedNode_UsesFallbackAndReportsIssue()
     {
         MarkdownRenderingIssue? issue = null;

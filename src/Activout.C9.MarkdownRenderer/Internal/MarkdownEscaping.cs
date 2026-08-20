@@ -16,6 +16,7 @@ internal static class MarkdownEscaping
         if (value.Length == 0) return value;
 
         StringBuilder? sb = null;
+        var orderedMarkerDelimiterIndex = FindLeadingOrderedListMarkerDelimiterIndex(value);
 
         for (var i = 0; i < value.Length; i++)
         {
@@ -23,9 +24,11 @@ internal static class MarkdownEscaping
             var escape = c switch
             {
                 '\\' or '`' or '[' or ']' or '<' or '>' => true,
-                '*' or '_' => IsFlanked(value, i),
+                '*' => IsFlanked(value, i) || (i == 0 && IsBulletMarker(value)),
+                '_' => IsFlanked(value, i),
+                '-' or '+' => i == 0 && IsBulletMarker(value),
                 '#' => i == 0,
-                _ => false
+                _ => i == orderedMarkerDelimiterIndex
             };
 
             if (escape)
@@ -80,5 +83,27 @@ internal static class MarkdownEscaping
         var leftIsWord = index > 0 && !char.IsWhiteSpace(value[index - 1]);
         var rightIsWord = index < value.Length - 1 && !char.IsWhiteSpace(value[index + 1]);
         return leftIsWord || rightIsWord;
+    }
+
+    /// <summary>
+    /// True when <paramref name="value"/> starts with a bullet character followed by a space or
+    /// nothing else, i.e. it would be read as a CommonMark list marker at the start of a line.
+    /// </summary>
+    private static bool IsBulletMarker(string value) =>
+        value.Length == 1 || char.IsWhiteSpace(value[1]);
+
+    /// <summary>
+    /// Finds the index of the <c>.</c> or <c>)</c> delimiter of a leading ordered-list marker
+    /// (a digit run followed by that delimiter, then a space or nothing else), or -1 if
+    /// <paramref name="value"/> does not start with one.
+    /// </summary>
+    private static int FindLeadingOrderedListMarkerDelimiterIndex(string value)
+    {
+        var i = 0;
+        while (i < value.Length && i < 9 && char.IsAsciiDigit(value[i])) i++;
+        if (i == 0 || i >= value.Length) return -1;
+        if (value[i] is not ('.' or ')')) return -1;
+        if (i + 1 < value.Length && !char.IsWhiteSpace(value[i + 1])) return -1;
+        return i;
     }
 }
