@@ -86,3 +86,7 @@ NuGet trusted publishing (GitHub OIDC via `NuGet/login`, no long-lived API key).
 `activout`, repository `Activout.C9.MarkdownRenderer` and workflow file `publish.yml`. It also publishes `.snupkg` symbol
 packages and a keyless build provenance attestation for every package.
 Don't change the version scheme without updating both workflows.
+
+To release, run `git tag vX.Y.Z && git push origin vX.Y.Z`. After pushing to NuGet the workflow creates the
+GitHub Release for the tag, with generated notes and the packages attached. Tags containing `-` are marked
+as prereleases. Don't create releases from the GitHub UI.
