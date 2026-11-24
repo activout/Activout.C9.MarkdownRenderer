@@ -79,7 +79,7 @@ Run all three before considering a change done. `artifacts/` and `bin/`/`obj/` a
 
 ## CI
 
-`.github/workflows/ci.yml` runs on every push/PR: restore, build, test, pack. Keep it green.
+`.github/workflows/ci.yml` runs on every pull request: restore, build, test, pack. Keep it green.
 `.github/workflows/publish.yml` packs and pushes to NuGet.org on `v*` tags using
 NuGet trusted publishing (GitHub OIDC via `NuGet/login`, no long-lived API key). It needs the
 `NUGET_USER` repo secret (nuget.org profile name) and a nuget.org trusted publishing policy for owner
